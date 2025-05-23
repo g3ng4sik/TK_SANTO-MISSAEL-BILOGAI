@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi Siswa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3a6ea5;
+            --secondary-color: #004e98;
+            --accent-color: #ff9505;
+            --light-color: #f0f4f8;
+            --dark-color: #333;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f0f4f8;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .search-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .search-input {
+            padding: 0.8rem 1rem;
+            width: 300px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.2);
+        }
+
+        .search-button {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .search-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .notification {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .notification.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .notification.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            display: none;
+            animation: slideDown 0.5s ease;
+        }
+
+        .congratulation {
+            background: linear-gradient(135deg, #28a745, #218838);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .congratulation h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .congratulation p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .congratulation-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .congratulation i {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        .congratulation-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-right: 1.5rem;
+            overflow: hidden;
+        }
+
+        .congratulation-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .congratulation-content-avatar {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .student-data {
+            padding: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .student-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .student-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--border-radius);
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-right: 1.5rem;
+            overflow: hidden;
+        }
+
+        .student-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .student-header-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .student-name {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .student-id {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .data-item {
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .data-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .data-value {
+            color: var(--dark-color);
+        }
+
+        .program-container {
+            padding: 2rem;
+            background-color: #f9f9f9;
+        }
+
+        .program-title {
+            font-size: 1.3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .official-info {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .official-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .official-name {
+            font-style: italic;
+            color: #555;
+        }
+
+        .program-list {
+            margin-left: 1.5rem;
+        }
+
+        .program-list ul {
+            list-style-type: none;
+        }
+
+        .program-list li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .program-list li:before {
+            content: "\f0eb";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { 
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .search-input {
+                width: 100%;
+                margin-bottom: 1rem;
+                margin-left: 0;
+            }
+            
+            .search-button {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .student-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .student-avatar {
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .congratulation-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .congratulation i {
+                margin-right: 0;
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Sistem Informasi Siswa</h1>
+        <p>Cari data siswa dengan NIPD</p>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <h2 class="search-title">Pencarian Data Siswa</h2>
+            <form class="search-form" onsubmit="event.preventDefault(); cariData();">
+                <input type="text" id="nipd" class="search-input" placeholder="Masukkan NIPD siswa">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>Cari
+                </button>
+            </form>
+            <div id="notification" class="notification"></div>
+        </div>
+
+        <div id="result" class="result-container">
+            <!-- Bagian Selamat yang Lulus -->
+            <div class="congratulation">
+                <div class="congratulation-content">
+                    <i class="fas fa-award"></i>
+                    <div>
+                        <h2>Selamat Anda Lulus!</h2>
+                        <p>Anda telah lulus dengan predikat yang memuaskan</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="student-data">
+                <div class="student-header">
+                    <div class="student-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="student-header-content">
+                        <h2 class="student-name">Nama Siswa</h2>
+                        <p class="student-id">Jenis Kelamin: -</p>
+                    </div>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">Nomor NISN</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Nomor Daftar Induk</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Tempat Lahir</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Tanggal Lahir</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item" style="grid-column: span 2;">
+                        <span class="data-label">Nama Orang Tua/Wali</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item" style="grid-column: span 2;">
+                        <span class="data-label">Tanggal Kelulusan</span>
+                        <span class="data-value">-</span>
+                    </div>
+                    <div class="data-item" style="grid-column: span 2;">
+                        <span class="data-label">Predikat Kelulusan</span>
+                        <span class="data-value">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="program-container">
+                <div class="official-info">
+                    <p class="official-title">Nama Kepala Sekolah:</p>
+                    <p class="official-name">Maria Appang Allo</p>
+                </div>
+                <div class="official-info">
+                    <p class="official-title">Ketua PSW Kab. Intan Jaya:</p>
+                    <p class="official-name">YANCE YANUARIUS WADOUGOUBY YOGI,Pr</p>
+                </div>
+
+                <h3 class="program-title">PROGRAM KEGIATAN BELAJAR</h3>
+                <h3 class="program-title">DI TAMAN KANAK - KANAK</h3>
+
+                <h4 class="program-title">A. PROGRAM PEMBENTUKAN PERILAKU YANG MELIPUTI :</h4>
+                <div class="program-list">
+                    <ul>
+                        <li>Moral Pancasila</li>
+                        <li>Agama</li>
+                        <li>Perasaan /Emosi</li>
+                        <li>Kemampuan Bermasyarakat</li>
+                        <li>Disiplin</li>
+                    </ul>
+                </div>
+                <h4 class="program-title">B. PROGRAM PENGEMBANGAN KEMAMPUAN DASAR YANG MELIPUTI :</h4>
+                <div class="program-list">
+                    <ul>
+                        <li>Pengembangan Daya Cipta</li>
+                        <li>Pengembangan Bahasa</li>
+                        <li>Pengembangan Damya Cipta</li>
+                        <li>Pengembangan Ketrampilan</li>
+                        <li>Pengembangan Jasmani</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2023 Sistem Informasi Siswa. Hak Cipta Dilindungi.</p>
+    </footer>
+
+    <script>
+        // Contoh data siswa (biasa ini akan diambil dari server)
+        const siswaData = {
+            '3189366293': {
+                nama_anak: 'AGELLA AGUSTINA BELAU',
+                jenis_kelamin: 'P',
+                nisn: '3189366293',
+                nidi: '568',
+                tempat_lahir: 'BAITAPA',
+                tanggal_lahir: '8/6/2018',
+                nama_ortu: 'HENDRIKUS BELAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '3189350063': {
+                nama_anak: 'BELCE BELAU',
+                jenis_kelamin: 'P',
+                nisn: '3189350063',
+                nidi: '570',
+                tempat_lahir: 'BILOGAI',
+                tanggal_lahir: '11/3/2018',
+                nama_ortu: 'HENGKI BELAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '3190916165': {
+                nama_anak: 'FELIX AGUN BELAU',
+                jenis_kelamin: 'L',
+                nisn: '3190916165',
+                nidi: '569',
+                tempat_lahir: 'KUMBALAGUPA',
+                tanggal_lahir: '3/11/2019',
+                nama_ortu: 'TOMAS,AGUN BELAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '3189689813': {
+                nama_anak: 'GREGORIUS AGUN BELAU',
+                jenis_kelamin: 'L',
+                nisn: '3189689813',
+                nidi: '571',
+                tempat_lahir: 'SAMBI',
+                tanggal_lahir: '8/1/2018',
+                nama_ortu: 'APERTINUS SANI',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935573': {
+                nama_anak: 'JEPRI DUWITAU',
+                jenis_kelamin: 'L',
+                nisn: '3189353',
+                nidi: '573',
+                tempat_lahir: 'SOLOMBALA',
+                tanggal_lahir: '8/14/2018',
+                nama_ortu: 'BUDI SONDEGAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935572': {
+                nama_anak: 'NOPERIANUS SONDEGAU',
+                jenis_kelamin: 'L',
+                nisn: '318935572',
+                nidi: '572',
+                tempat_lahir: 'WANDOGA',
+                tanggal_lahir: '11/16/2018',
+                nama_ortu: 'NAFTALINUS SONDEGAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '3193664192': {
+                nama_anak: 'PILAR ANIELI HELJANAN',
+                jenis_kelamin: 'P',
+                nisn: '3193664192',
+                nidi: '578',
+                tempat_lahir: 'TEIKA',
+                tanggal_lahir: '4/18/2019',
+                nama_ortu: 'JOHANNES HELJANAN',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '3187961090': {
+                nama_anak: 'TAGALINA NAMBAGANI',
+                jenis_kelamin: 'P',
+                nisn: '3187961090',
+                nidi: '576',
+                tempat_lahir: 'KUMBALAGUPA',
+                tanggal_lahir: '11/7/2018',
+                nama_ortu: 'TINUS JAPUGAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935582': {
+                nama_anak: 'ALSON NAMBAğan',
+                jenis_kelamin: 'L',
+                nisn: '318935582',
+                nidi: '582',
+                tempat_lahir: 'SAPA',
+                tanggal_lahir: '2/1/2018',
+                nama_ortu: 'MAMINCHELE NAMBAğan',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935852': {
+                nama_anak: 'MONIKA SONDEGAU',
+                jenis_kelamin: 'P',
+                nisn: '318935852',
+                nidi: '585',
+                tempat_lahir: 'YOKATAPA',
+                tanggal_lahir: '1/11/2018',
+                nama_ortu: 'JANUARIUS SONDEGAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935871': {
+                nama_anak: 'MERYANTI AH. DOLEH BAGAU',
+                jenis_kelamin: 'P',
+                nisn: '318935871',
+                nidi: '581',
+                tempat_lahir: 'WINDESI',
+                tanggal_lahir: '9/19/2018',
+                nama_ortu: 'TITUS BAGAU',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            },
+            '318935852': {
+                nama_anak: 'JEMINCE SANI',
+                jenis_kelamin: 'P',
+                nisn: '318935852',
+                nidi: '852',
+                tempat_lahir: 'INTAN Jaya',
+                tanggal_lahir: '7/1/2018',
+                nama_ortu: 'MARKUS SANI',
+                tanggal_kelulusan: '04 Juni 2025',
+                predikat_kelulusan: 'Memuaskan'
+            }
+        };
+
+        function cariData() {
+            const nipd = document.getElementById('nipd').value.trim();
+            const resultDiv = document.getElementById('result');
+            const notificationDiv = document.getElementById('notification');
+            
+            // Kosongkan hasil sebelumnya
+            resultDiv.style.display = 'none';
+            notificationDiv.style.display = 'none';
+            notificationDiv.className = 'notification';
+            
+            if (!nipd) {
+                showNotification('Silakan masukkan NIPD terlebih dahulu', 'error');
+                return;
+            }
+            
+            // Cari data siswa berdasarkan NIPD
+            const siswa = siswaData[nipd];
+            
+            if (siswa) {
+                // Isi data siswa ke dalam elemen HTML
+                document.getElementById('nama-anak').textContent = siswa.nama_anak;
+                document.getElementById('jenis_kelamin').textContent = 'Jenis Kelamin: ' + siswa.jenis_kelamin;
+                document.getElementById('nisn').textContent = siswa.nisn;
+                document.getElementById('nidi').textContent = siswa.nidi;
+                document.getElementById('tempat_lahir').textContent = siswa.tempat_lahir;
+                document.getElementById('tanggal_lahir').textContent = siswa.tanggal_lahir;
+                document.getElementById('nama_ortu').textContent = siswa.nama_ortu;
+                
+                // Isi data kelulusan
+                document.getElementById('tanggal_kelulusan').textContent = siswa.tanggal_kelulusan || '-';
+                document.getElementById('predikat_kelulusan').textContent = siswa.predikat_kelulusan || '-';
+                
+                // Tampilkan hasil
+                resultDiv.style.display = 'block';
+                showNotification('Data siswa ditemukan', 'success');
+            } else {
+                showNotification('Data siswa dengan NIPD tersebut tidak ditemukan', 'error');
+            }
+        }
+        
+        function showNotification(message, type) {
+            const notificationDiv = document.getElementById('notification');
+            notificationDiv.textContent = message;
+            notificationDiv.className = `notification ${type};
+            notificationDiv.style.display = 'block';
+            
+            // Hilangkan notifikasi setelah 3 detik
+            setTimeout(() => {
+                notificationDiv.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
